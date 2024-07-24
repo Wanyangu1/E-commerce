@@ -69,6 +69,8 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 # Braintree settings
 BRAINTREE_MERCHANT_ID = os.getenv('BRAINTREE_MERCHANT_ID')
 BRAINTREE_PUBLIC_KEY = os.getenv('BRAINTREE_PUBLIC_KEY')

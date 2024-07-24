@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from orders.models import Order
 from django.shortcuts import render
+from .tasks import payment_completed
+
 
 def payment_done(request):
     """View to handle successful payment."""
@@ -44,6 +46,7 @@ def payment_process(request):
             # Store the unique transaction ID
             order.braintree_id = result.transaction.id
             order.save()
+            payment_completed.delay(order.id)
             # Redirect to the payment success page
             return redirect('payment:done')
         else:
