@@ -1,0 +1,58 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+
+# Django
+db.sqlite3
+media/
+
+# Environment variables
+.env
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+
+# Django migrations
+*.log
+*.pot
+*.pyc
+*.pyo
+``
