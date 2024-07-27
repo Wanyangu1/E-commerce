@@ -50,11 +50,8 @@ def order_create(request):
                 )
             # Clear the cart
             cart.clear()
-            # Trigger asynchronous task to handle order creation logic
             order_created.delay(order.id)
-            # Store the order ID in the session
             request.session['order_id'] = order.id
-            # Redirect to the payment process
             return redirect(reverse('payment:process'))
     else:
         form = OrderCreateForm()
