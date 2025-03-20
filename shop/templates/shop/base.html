@@ -1,33 +1,164 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>{% block title %}My shop{% endblock %}</title>
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <title>{% block title %}My Shop{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div id="header">
-        <a href="/" class="logo">My shop</a>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+<nav class="bg-gray-800 shadow text-white">
+    <div class="container flex justify-between p-4 items-center mx-auto">
+        <!-- Logo -->
+        <a href="/" class="text-2xl font-bold hover:text-gray-300 transition">My Shop</a>
+        <!-- Mobile Menu Toggle -->
+        <div class="lg:hidden">
+            <button class="text-white focus:outline-none" onclick="toggleMenu()">
+                <i class="fa-bars fas"></i>
+            </button>
+        </div>
+        <!-- Desktop Navigation -->
+        <ul class="hidden lg:flex space-x-4">
+            <li>
+                <a href="/" class="flex border border-gray-300 rounded hover:bg-gray-700 hover:border-white items-center px-3 py-1 transition">
+                    <i class="fa-home fas mr-2"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="/products" class="flex border border-gray-300 rounded hover:bg-gray-700 hover:border-white items-center px-3 py-1 transition">
+                    <i class="fa-th-list fas mr-2"></i> Products
+                </a>
+            </li>
+            <li>
+                <a href="/about" class="flex border border-gray-300 rounded hover:bg-gray-700 hover:border-white items-center px-3 py-1 transition">
+                    <i class="fa-info-circle fas mr-2"></i> About
+                </a>
+            </li>
+            <li>
+                <a href="/contact" class="flex border border-gray-300 rounded hover:bg-gray-700 hover:border-white items-center px-3 py-1 transition">
+                    <i class="fa-envelope fas mr-2"></i> Contact
+                </a>
+            </li>
+            <li>
+                {% with total_items=cart|length %}
+                <a href="{% url 'cart:cart_detail' %}" class="flex border border-gray-300 rounded hover:bg-gray-700 hover:border-white items-center px-3 py-1 transition">
+                    <i class="fa-shopping-cart fas mr-2"></i> Cart ({{ total_items|default:0 }})
+                </a>
+                {% endwith %}
+            </li>
+        </ul>
     </div>
-    <div id="subheader">
-        <div class="cart">
-            {% with total_items=cart|length %}
-            {% if total_items > 0 %}
-            Your cart:
-            <a href="{% url "cart:cart_detail" %}">
-            {{ total_items }} item{{ total_items|pluralize }},
-            ${{ cart.get_total_price }}
-            </a>
-            {% else %}
-            Your cart is empty.
-            {% endif %}
-            {% endwith %}
+</nav>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden">
+            <ul class="pb-4 px-4 space-y-2">
+                <li>
+                    <a href="/" class="flex hover:text-gray-300 items-center transition">
+                        <i class="fa-home fas mr-2"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="/products" class="flex hover:text-gray-300 transition">
+                        <i class="fa-th-list fas mr-2"></i> Products
+                    </a>
+                </li>
+                <li>
+                    <a href="/about" class="flex hover:text-gray-300 items-center transition">
+                        <i class="fa-info-circle fas mr-2"></i> About
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact" class="flex hover:text-gray-300 items-center transition">
+                        <i class="fa-envelope fas mr-2"></i> Contact
+                    </a>
+                </li>
+                <li>
+                    {% with total_items=cart|length %}
+                    <a href="{% url 'cart:cart_detail' %}" class="flex hover:text-gray-300 items-center transition">
+                        <i class="fa-shopping-cart fas mr-2"></i> Cart ({{ total_items|default:0 }})
+                    </a>
+                    {% endwith %}
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Subheader (Cart Info and Buttons) -->
+<div id="subheader" class="bg-white shadow">
+    <div class="container p-4 text-gray-700 mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Left: Cart Info -->
+            <div class="flex items-center">
+                {% with total_items=cart|length %}
+                    {% if total_items > 0 %}
+                        <a href="{% url 'cart:cart_detail' %}" class="text-sm font-medium hover:text-blue-500 transition">
+                            {{ total_items }} item{{ total_items|pluralize }}, Ksh {{ cart.get_total_price }}
+                        </a>
+                    {% else %}
+                        <span class="text-sm font-medium">Your cart is empty.</span>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <!-- Right: Action Buttons -->
+            <div class="flex items-center space-x-3">
+                <!-- Sales Reports Button -->
+                <button type="button" class="flex border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white items-center px-4 py-2 transition">
+                    <i class="fa-chart-line fas mr-2"></i> Sales Reports
+                </button>
+                <!-- Support Button -->
+                <button type="button" class="flex border border-blue-500 rounded text-blue-500 hover:bg-blue-500 hover:text-white items-center px-4 py-2 transition">
+                    <i class="fa-headset fas mr-2"></i> Support
+                </button>
+                <!-- Sales Dropdown Button -->
+                <div class="text-left inline-block relative">
+                    <button type="button" id="salesDropdown" class="flex border border-blue-500 rounded text-blue-500 focus:outline-none hover:bg-blue-500 hover:text-white items-center px-4 py-2 transition" aria-expanded="false">
+                        <i class="fa-dollar-sign fas mr-2"></i> Sales <i class="fa-chevron-down fas ml-2"></i>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div id="salesDropdownMenu" class="bg-white rounded-md shadow-lg w-40 absolute hidden mt-2 origin-top-right right-0 ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="salesDropdown">
+                        <div class="py-1" role="none">
+                            <a href="#" class="text-gray-700 text-sm block hover:bg-gray-100 px-4 py-2" role="menuitem">Weekly</a>
+                            <a href="#" class="text-gray-700 text-sm block hover:bg-gray-100 px-4 py-2" role="menuitem">Monthly</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<!-- JavaScript to Toggle Sales Dropdown -->
+<script>
+    document.getElementById('salesDropdown').addEventListener('click', function() {
+        const menu = document.getElementById('salesDropdownMenu');
+        menu.classList.toggle('hidden');
+    });
+    // Optionally, add a click listener on the document to close the dropdown when clicking outside.
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('salesDropdown');
+        const menu = document.getElementById('salesDropdownMenu');
+        if (!dropdown.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
+
+
+    <!-- Main Content -->
     <div id="content">
         {% block content %}
         {% endblock %}
     </div>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
 </body>
 </html>

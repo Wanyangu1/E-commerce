@@ -1,6 +1,10 @@
 {% extends "shop/base.html" %}
-{% block title %}Payment successful{% endblock %}
+{% block title %}Payment Successful{% endblock %}
 {% block content %}
- <h1>Your payment was successful</h1>
- <p>Your payment has been processed successfully.</p>
+<div class="container p-6 mx-auto">
+  <div class="bg-green-100 border border-green-400 rounded text-green-700 max-w-md mx-auto px-4 py-3 relative" role="alert">
+    <strong class="font-bold">Payment Successful!</strong>
+    <span class="block sm:inline">Your payment has been processed successfully.</span>
+  </div>
+</div>
 {% endblock %}

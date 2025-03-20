@@ -1,76 +1,109 @@
 {% extends "shop/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block title %}Pay by Credit Card{% endblock %}
 
 {% block content %}
-<h1>Pay by Credit Card</h1>
-<form id="payment" method="post">
-    <label for="card-number">Card Number</label>
-    <div id="card-number" class="field"></div>
-
-    <label for="cvv">CVV</label>
-    <div id="cvv" class="field"></div>
-
-    <label for="expiration-date">Expiration Date</label>
-    <div id="expiration-date" class="field"></div>
-
-    <input type="hidden" id="nonce" name="payment_method_nonce" value="">
+<div class="bg-white p-6 rounded-lg shadow-lg max-w-lg mt-10 mx-auto">
+  <h1 class="flex text-2xl text-gray-800 font-bold items-center mb-6">
+    <i class="text-blue-600 fa-credit-card fas mr-2"></i> Pay by Credit Card
+  </h1>
+  <form id="payment" method="post" class="space-y-2">
     {% csrf_token %}
-    <input type="submit" value="Pay">
-</form>
+    <div>
+      <label for="card-number" class="text-gray-700 block font-medium mb-1">
+        <i class="fa-credit-card fas mr-1"></i> Card Number
+      </label>
+      <div id="card-number" class="border border-gray-300 rounded field"></div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="cvv" class="text-gray-700 block font-medium mb-1">
+          <i class="fa-lock fas mr-1"></i> CVV
+        </label>
+        <div id="cvv" class="border border-gray-300 p-1.5 rounded field"></div>
+      </div>
+      <div>
+        <label for="expiration-date" class="text-gray-700 block font-medium mb-1">
+          <i class="fa-calendar-alt fas mr-1"></i> Expiration Date
+        </label>
+        <div id="expiration-date" class="border border-gray-300 p-1.5 rounded field"></div>
+      </div>
+    </div>
+    <input type="hidden" id="nonce" name="payment_method_nonce" value="">
+    <div>
+      <input type="submit" value="Pay" class="bg-blue-600 rounded text-white w-full font-semibold hover:bg-blue-700 py-2 transition">
+    </div>
+  </form>
+</div>
 
-<!-- Include the Braintree JavaScript client SDK -->
+<!-- Braintree JS SDK -->
 <script src="https://js.braintreegateway.com/web/3.44.2/js/client.min.js"></script>
 <script src="https://js.braintreegateway.com/web/3.44.2/js/hosted-fields.min.js"></script>
-
 <script>
-    var form = document.querySelector('#payment');
-    var submit = document.querySelector('input[type="submit"]');
-    
-    braintree.client.create({
-        authorization: '{{ client_token }}'
-    }, function (clientErr, clientInstance) {
-        if (clientErr) {
-            console.error(clientErr);
-            return;
-        }
+  var form = document.querySelector('#payment');
+  var submit = document.querySelector('input[type="submit"]');
+  
+  braintree.client.create({
+      authorization: '{{ client_token }}'
+  }, function (clientErr, clientInstance) {
+      if (clientErr) {
+          console.error(clientErr);
+          return;
+      }
 
-        braintree.hostedFields.create({
-            client: clientInstance,
-            styles: {
-                'input': {'font-size': '13px'},
-                'input.invalid': {'color': 'red'},
-                'input.valid': {'color': 'green'}
-            },
-            fields: {
-                number: { selector: '#card-number' },
-                cvv: { selector: '#cvv' },
-                expirationDate: { selector: '#expiration-date' }
-            }
-        }, function (hostedFieldsErr, hostedFieldsInstance) {
-            if (hostedFieldsErr) {
-                console.error(hostedFieldsErr);
-                return;
-            }
+      braintree.hostedFields.create({
+          client: clientInstance,
+          styles: {
+              'input': {
+                  'font-size': '16px',
+                  'color': '#4A5568'
+              },
+              'input.invalid': {
+                  'color': 'red'
+              },
+              'input.valid': {
+                  'color': 'green'
+              }
+          },
+          fields: {
+              number: { 
+                selector: '#card-number',
+                placeholder: '4111 1111 1111 1111'
+              },
+              cvv: { 
+                selector: '#cvv',
+                placeholder: '123'
+              },
+              expirationDate: { 
+                selector: '#expiration-date',
+                placeholder: 'MM/YY'
+              }
+          }
+      }, function (hostedFieldsErr, hostedFieldsInstance) {
+          if (hostedFieldsErr) {
+              console.error(hostedFieldsErr);
+              return;
+          }
 
-            submit.removeAttribute('disabled');
+          submit.removeAttribute('disabled');
 
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+          form.addEventListener('submit', function (event) {
+              event.preventDefault();
 
-                hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
-                    if (tokenizeErr) {
-                        console.error(tokenizeErr);
-                        return;
-                    }
+              hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+                  if (tokenizeErr) {
+                      console.error(tokenizeErr);
+                      return;
+                  }
 
-                    // Set the nonce value to send to the server
-                    document.getElementById('nonce').value = payload.nonce;
-                    // Submit the form
-                    form.submit();
-                });
-            }, false);
-        });
-    });
+                  // Set the nonce value to send to the server
+                  document.getElementById('nonce').value = payload.nonce;
+                  form.submit();
+              });
+          }, false);
+      });
+  });
 </script>
 {% endblock %}

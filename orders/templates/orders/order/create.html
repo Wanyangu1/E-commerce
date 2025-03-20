@@ -1,33 +1,102 @@
 {% extends "shop/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
 
-{% block title %}
-    Checkout
-{% endblock %}
+{% block title %}Checkout{% endblock %}
 
 {% block content %}
-    <h1>Checkout</h1>
-    <div class="order-info">
-        <h3>Your order</h3>
-        <ul>
-            {% for item in cart %}
-                <li>
-                    {{ item.quantity }}x {{ item.product.name }}
-                    <span>${{ item.total_price|floatformat:2 }}</span>
+<div class="container p-6 mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+    
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <!-- Order Information -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="flex text-2xl font-semibold items-center mb-4">
+                <i class="text-blue-600 fa-receipt fas mr-2"></i>
+                Your Order
+            </h3>
+            <ul class="divide-gray-200 divide-y">
+                {% for item in cart %}
+                <li class="flex justify-between py-2">
+                    <span>{{ item.quantity }}x {{ item.product.name }}</span>
+                    <span class="font-medium">Ksh {{ item.total_price|floatformat:2 }}</span>
                 </li>
-            {% endfor %}
-            {% if cart.coupon %}
-                <li>
-                    "{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% off)
-                    <span class="neg">- ${{ cart.get_discount|floatformat:2 }}</span>
+                {% endfor %}
+                {% if cart.coupon %}
+                <li class="flex justify-between py-2">
+                    <span>"{{ cart.coupon.code }}" ({{ cart.coupon.discount }}% off)</span>
+                    <span class="text-red-500 font-medium">- Ksh {{ cart.get_discount|floatformat:2 }}</span>
                 </li>
-            {% endif %}
-        </ul>
+                {% endif %}
+            </ul>
+            <p class="text-xl font-bold mt-4">
+                Total: Ksh {{ cart.get_total_price_after_discount|floatformat:2 }}
+            </p>
+        </div>
         
-        <p>Total: ${{ cart.get_total_price_after_discount|floatformat:2 }}</p>
+        <!-- Order Form -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="flex text-2xl font-semibold items-center mb-4">
+                <i class="text-blue-600 fa-user fas mr-2"></i>
+                Billing Details
+            </h3>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_first_name">First Name</label>
+                    {% render_field form.first_name class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="Your first name" %}
+                </div>
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_last_name">Last Name</label>
+                    {% render_field form.last_name class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="Your last name" %}
+                </div>
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_email">Email</label>
+                    {% render_field form.email class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="you@example.com" %}
+                </div>
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_address">Address</label>
+                    {% render_field form.address class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="Street address" %}
+                </div>
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_postal_code">Postal Code</label>
+                    {% render_field form.postal_code class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="Postal Code" %}
+                </div>
+                <div>
+                    <label class="text-gray-700 block font-medium mb-1" for="id_city">City</label>
+                    {% render_field form.city class="border border-gray-300 p-2 rounded w-full focus:border-blue-500 focus:outline-none" placeholder="City" %}
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="bg-blue-600 rounded text-white w-full font-semibold hover:bg-blue-700 py-2 transition">
+                        <i class="fa-shopping-cart fas mr-2"></i> Place Order
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-    <form method="post" class="order-form">
-        {{ form.as_p }}
-        <p><input type="submit" value="Place order"></p>
-        {% csrf_token %}
-    </form>
+    
+    <!-- Related Products Section -->
+    {% if related_products %}
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold mb-6">Related Products</h2>
+        <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {% for product in related_products %}
+            <div class="bg-white rounded-lg shadow-lg hover:shadow-xl overflow-hidden transition-shadow">
+                <a href="{{ product.get_absolute_url }}">
+                    <img class="h-48 w-full object-cover" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ product.name }}">
+                </a>
+                <div class="p-4">
+                    <h3 class="text-gray-700 text-lg font-medium">
+                        <a href="{{ product.get_absolute_url }}" class="hover:text-blue-500 transition">{{ product.name }}</a>
+                    </h3>
+                    <p class="text-gray-600 mt-2">Ksh {{ product.price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

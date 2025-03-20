@@ -116,25 +116,11 @@ ul.errorlist {
 }
 
 
-#header {
-    padding:10px 100px;
-    font-size:18px;
-    overflow:auto;
-}
-
 #subheader {
     background:#ececec;
     color:#444;
     padding:15px 100px;
     overflow:auto;
-}
-
-#header .logo {
-    font-family: 'Ubuntu', sans-serif;
-    float:left;
-    color:#333;
-    font-size:22px;
-    margin-right:10%;
 }
 
 #subheader .cart {
@@ -386,5 +372,96 @@ form div.field {
 @media (max-width: 480px) {
     .product-item {
         flex: 1 1 100%; /* 1 item per row for very small screens */
+    }
+}
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Container */
+.navbar {
+    background-color: #333;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Navbar Inner Container */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* Logo */
+.navbar-logo {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation Items */
+.nav-item {
+    margin-left: 20px;
+}
+
+/* Navigation Links */
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+}
+
+/* Icons within Links */
+.nav-link i {
+    margin-right: 8px;
+}
+
+/* Hover Effect */
+.nav-link:hover {
+    background-color: #575757;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+/* Mobile Menu Icon */
+.menu-icon {
+    display: none;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #333;
+    }
+    .nav-menu.active {
+        display: flex;
+    }
+    .nav-item {
+        margin: 10px 0;
+        text-align: center;
     }
 }

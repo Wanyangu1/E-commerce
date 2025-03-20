@@ -1,6 +1,16 @@
 {% extends "shop/base.html" %}
-{% block title %}Payment canceled{% endblock %}
+{% block title %}Payment Canceled{% endblock %}
 {% block content %}
- <h1>Your payment has not been processed</h1>
- <p>There was a problem processing your payment.</p>
+<div class="container p-12 mx-auto">
+  <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-md mx-auto">
+    <i class="text-5xl text-red-500 fa-times-circle fas mb-4"></i>
+    <h1 class="text-2xl text-gray-800 font-bold mb-2">Payment Canceled</h1>
+    <div class="bg-red-100 border border-red-400 rounded text-red-700 px-4 py-3 relative" role="alert">
+        <strong class="font-bold">Payment Issue!</strong>
+        <span class="block sm:inline">
+          Your payment has not been processed due to an issue. Please try again or contact support if the problem persists.
+        </span>
+      </div>      
+  </div>
+</div>
 {% endblock %}

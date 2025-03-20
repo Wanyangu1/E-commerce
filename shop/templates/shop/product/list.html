@@ -1,5 +1,6 @@
 {% extends "shop/base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
     {% if category %}
@@ -10,39 +11,53 @@
 {% endblock %}
 
 {% block content %}
-    <div id="sidebar">
-        <h3>Categories</h3>
-        <ul>
-            <li {% if not category %}class="selected"{% endif %}>
-                <a href="{% url 'shop:product_list' %}">All</a>
-            </li>
-            {% for c in categories %}
-                <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+<div class="px-4 py-8">
+    <div class="flex flex-col lg:flex-row">
+        <!-- Sidebar -->
+        <aside class="bg-white border-gray-300 border-r p-6 rounded-lg shadow-lg w-full lg:mb-0 lg:w-1/5 mb-6">
+            <h3 class="flex text-2xl font-semibold items-center mb-4">
+                <i class="text-blue-500"></i>
+                Categories
+            </h3>
+            <ul class="text-black space-y-4">
+                <li class="flex duration-200 gap-2 hover:text-blue-500 items-center transition-colors">
+                    <i class="fa-boxes fas"></i>
+                    <a href="{% url 'shop:product_list' %}">All</a>
+                </li>
+                {% for c in categories %}
+                <li class="flex duration-200 font-semibold gap-2 hover:text-blue-600 items-center transition-colors">
+                    <i class="text-blue-400 fa-tag fas"></i>
                     <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
                 </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-    <div id="main" class="product-list">
-        <h1>
-            {% if category %}
-                {{ category.name }}
-            {% else %}
-                Products
-            {% endif %}
-        </h1>
-        
-        <div class="product-container">
-            {% for product in products %}
-                <div class="product-item">
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="w-full lg:pl-8 lg:w-4/5">
+            <h1 class="text-2xl font-bold mb-6">
+                {% if category %}
+                    {{ category.name }}
+                {% else %}
+                    Products
+                {% endif %}
+            </h1>
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2">
+                {% for product in products %}
+                <div class="bg-white rounded-lg shadow-md duration-300 hover:scale-105 overflow-hidden transform transition">
                     <a href="{{ product.get_absolute_url }}">
-                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ product.name }}">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ product.name }}" class="h-48 w-full object-cover">
                     </a>
-                    <a href="{{ product.get_absolute_url }}" class="product-name">{{ product.name }}</a>
-                    <p class="price">${{ product.price }}</p>
+                    <div class="p-4">
+                        <a href="{{ product.get_absolute_url }}" class="text-gray-800 text-lg block duration-200 font-semibold hover:text-blue-500 transition-colors">
+                            {{ product.name }}
+                        </a>
+                        <p class="text-gray-600 font-semibold mt-2">Price/Kg: Ksh {{ product.price }}</p>
+                    </div>
                 </div>
-            {% endfor %}
-        </div>
+                {% endfor %}
+            </div>
+        </main>
     </div>
+</div>
 {% endblock %}
